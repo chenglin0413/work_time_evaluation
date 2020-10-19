@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <meta charset="utf-8">
+    <title>Angular_work_time_evaluation</title>
+    <!--引入bootstrap-->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/work_time_evaluation.js"></script>
+    <style>
+        .row>div{
+            padding-top: 15px;
+            padding-bottom: 15px;
+            background-color: rgb(232, 238, 238);
+            border-style:groove;
+            }
+        input[type="textarea"] {
+            width: 100%;
+            height: 50px;
+        }
+
+
+    </style>
+    <title>開發工時評估文件 v1</title>
+</head>
+<body ng-controller="wteController as wteCtrl">
+    <!-- <pre> controller content： -->
+		<!-- {{wteCtrl | json}} -->
+	<!-- </pre> -->
+    <div class="container-fluid">
+            <h2 style="text-align: center;"><strong>開發工時評估文件</strong></h2>
+            <div class="row">
+                <div class="col-md-2 ">IssueNO</div><div  class="col-md-4 "><input id="IssueNO" type="text"  ng-model=wteCtrl.property.issuNO></div>
+                <div class="col-md-2 ">企業內機能</div><div  class="col-md-4 "><input id="GroupType" type="text"  ng-model=wteCtrl.property.groupType></div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 ">需求</div><div class="col-md-4 "><input id="demand" type="text" class="form-control" ng-model=wteCtrl.property.demand></div>
+                <div class="col-md-2 ">負責人員</div><div  class="col-md-4 "><input id="personInChar" type="text"  ng-model=wteCtrl.property.personInChar></div>
+            </div>
+
+            <div class="row" >
+                <div class="col-md-2 ">評估工時(h)</div><div  class="col-md-4 "><input id="evalTime" type="text"  ng-model="wteCtrl.property.evalTime" ></div>
+                <div class="col-md-2 ">預估工時(h)</div><div  class="col-md-4 "><input id="estiTime" type="text"  ng-model="wteCtrl.property.estiTime" ></div>
+            </div>
+            <h6 style="text-align: center;"><strong>工時明細</strong></h6>
+            <div class="row">
+                <div class="col-2 text-center">事項</div>
+                <div class="col-1 text-center">評估工時(h)</div>
+                <div class="col-1 text-center">評估占比</div>
+                <div class="col-1 text-center">預估工時(h)</div>
+                <div class="col-1 text-center">預估占比</div>
+                <div class="col-3 text-center">Comment</div>
+                <div class="col-3 text-center">Function</div>
+            </div>
+            <div class="row" ng-repeat="item in wteCtrl.modules_normal">
+                <div class="col-12 text-center" ng-if="$index==2"><h4 style="text-align: center;"><strong>程式開發</strong></h4></div>
+                <div class="col-12 text-center" ng-if="$index==5"><h4 style="text-align: center;"><strong>系統測試</strong></h4></div>
+                <div class="col-2 text-center">{{item.txtItem}}</div>
+                <div class="col-1 text-center">
+                    <div ng-hide="item.edit" >{{item.txtEvalTime}}</div>
+                    <div ng-show="item.edit"><input class="form-control"  type="number"  ng-model="item.txtEvalTime" ng-change="wteCtrl.timeCalcProc()"></div>
+                </div>
+                <div class="col-1 text-center">{{item.txtEvalPercent}}</div>
+
+                <div class="col-1 text-center">
+                    <div ng-hide="item.edit">{{item.txtEstiTime}}</div>
+                    <div ng-show="item.edit"><input class="form-control"  type="number"  ng-model="item.txtEstiTime" ng-change="wteCtrl.timeCalcProc()"></div>
+                </div>
+                <div class="col-1 text-center">{{item.txtEstiPercent}}</div>
+                <div class="col-3 text-center">
+                    <div ng-hide="item.edit">{{item.txtComments}}</div>
+                    <div ng-show="item.edit"><input class="form-control"  type="textarea"  ng-model="item.txtComments"></div> 
+                </div>
+                <div class="col-3 text-center">
+                    <div class="btn-group">
+                        <div ng-hide="item.edit">
+                            <button class="btn btn-info"   ng-click="wteCtrl.enableEdit(item)">修改</button>
+                        </div>
+                        <div ng-show="item.edit">
+							<button class="btn btn-warning"  ng-click="wteCtrl.disableEdit(item,'save')">儲存</button>
+							<button class="btn btn-primary"  ng-click="wteCtrl.disableEdit(item,'cancel')">取消</button>
+						</div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+
+            <div class="row" ng-repeat="item in wteCtrl.modules_dynamic_table">
+                <div class="col-2 text-center">{{item.txtItem}}</div>
+                <div class="col-1 text-center">
+                    <div ng-hide="item.edit">{{item.txtEvalTime}}</div>
+                    <div ng-show="item.edit"><input class="form-control"  type="number"  ng-model="item.txtEvalTime" ng-change="wteCtrl.timeCalcProc()"></div>
+                </div>
+                <div class="col-1 text-center">{{item.txtEvalPercent}}</div>
+
+                <div class="col-1 text-center">
+                    <div ng-hide="item.edit">{{item.txtEstiTime}}</div>
+                    <div ng-show="item.edit"><input class="form-control"  type="number"  ng-model="item.txtEstiTime" ng-change="wteCtrl.timeCalcProc()"></div>
+                </div>
+                <div class="col-1 text-center">{{item.txtEstiPercent}}</div>
+                <div class="col-3 text-center">
+                    <div ng-hide="item.edit">{{item.txtComments}}</div>
+                    <div ng-show="item.edit"><input class="form-control"  type="textarea"  ng-model="item.txtComments"></div> 
+                </div>
+                <div class="col-3 text-center">
+                    <div class="btn-group">
+                        <div ng-hide="item.edit">
+                            <button class="btn btn-info"   ng-click="wteCtrl.enableEdit(item)">修改</button>
+                            <button class="btn btn-danger" ng-click="wteCtrl.removeItem($index)">刪除</button>
+                        </div>
+                        <div ng-show="item.edit">
+							<button class="btn btn-warning"  ng-click="wteCtrl.disableEdit(item,'save')">儲存</button>
+							<button class="btn btn-primary"  ng-click="wteCtrl.disableEdit(item,'cancel')">取消</button>
+						</div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-2 text-center">
+                    <input class="form-control"  type="text" placeholder="請填入項目" ng-model="wteCtrl.newItem.txtItem">
+                </div>
+                <div class="col-1 text-center">     
+                    <input class="form-control"  type="number" placeholder="評估工時"  ng-model="wteCtrl.newItem.txtEvalTime">
+                </div>
+                <div class="col-1 text-center"></div>
+                <div class="col-1 text-center">
+                    <input class="form-control"  type="number" placeholder="預估工時"  ng-model="wteCtrl.newItem.txtEstiTime">
+                </div>
+                <div class="col-1 text-center"></div>
+                <div class="col-3 text-center">
+                    <input class="form-control"  type="textarea" placeholder="備註" ng-model="wteCtrl.newItem.txtComments">
+                </div>
+                <div class="col-3 text-center">
+                    <button class="btn btn-success btn-lg"   ng-click="wteCtrl.createItem(wteCtrl.newItem)">新增(上方動態表格)</button>
+                </div>
+                    
+            </div>
+            <br>
+    </div>
+
+
+    
+
+</body>
+</html>
