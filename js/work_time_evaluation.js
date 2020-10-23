@@ -15,7 +15,9 @@ var app = angular
       // public property
       // ==============================
       _self.property=[];//head_property
-      _self.modules_normal=[];// table_data
+      _self.modules_detail=[];
+      _self.modules_develop=[];
+      _self.modules_test=[];
       _self.modules_dynamic_table=[];
       _self.newItem ={};// new_item
       
@@ -40,119 +42,117 @@ var app = angular
       // private method implement
       // ==============================
       function _init() {
-        _self.backuypdata = [
-          
-
-        ]
         _self.property=
-            {
-             issuNO:"emp-XXX",
-              groupType:"資材組/工程組/保養組",
-              demand:"莊斐傑_便_A06801282_增訂-越南工程廠商自備工具物品清單作業",
-              personInChar:"XXX",
-              evalTime:348,
-              estiTime:201
-            }
-        
-        _self.modules_normal=[
+        {
+         issuNO:"emp-XXX",
+          groupType:"資材組/工程組/保養組",
+          demand:"莊斐傑_便_A06801282_增訂-越南工程廠商自備工具物品清單作業",
+          personInChar:"XXX",
+          evalTime:348,
+          estiTime:201
+        }
+         _self.modules_detail=[
             {   
-              txtItem:"需求性評估/確認",
-              txtEvalTime:0,
-              txtEvalPercent:"",
-              txtEstiTime:0,
-              txtEstiPercent:"",
-              txtComments:""                            
+                txtItem:"需求性評估/確認",
+                txtEvalTime:0,
+                txtEvalPercent:"",
+                txtEstiTime:0,
+                txtEstiPercent:"",
+                txtComments:""                            
             },
             {
-              txtItem:"系統影響性評估",
-              txtEvalTime:0,
-              txtEvalPercent:"",
-              txtEstiTime:0,
-              txtEstiPercent:"",
-              txtComments:""
-            },
-            { 
+                txtItem:"系統影響性評估",
+                txtEvalTime:0,
+                txtEvalPercent:"",
+                txtEstiTime:0,
+                txtEstiPercent:"",
+                txtComments:""
+            }
+          ]
+        _self.modules_develop=[
+          { 
               txtItem:"開發(網頁)",
               txtEvalTime:0,
               txtEvalPercent:"",
               txtEstiTime:0,
               txtEstiPercent:"",
               txtComments:""
-            },
-            {
+          },
+          {
               txtItem:"開發(批次)",
               txtEvalTime:0,
               txtEvalPercent:"",
               txtEstiTime:0,
               txtEstiPercent:"",
               txtComments:""
-            },
-            {
+          },
+          {
               txtItem:"開發(資料交換)",
               txtEvalTime:0,
               txtEvalPercent:"",
               txtEstiTime:0,
               txtEstiPercent:"",
               txtComments:""
-            },
-            { 
-              txtItem:"測試(網頁)",
-              txtEvalTime:0,
-              txtEvalPercent:"",
-              txtEstiTime:0,
-              txtEstiPercent:"",
-              txtComments:""
-            },
-            {
-              txtItem:"測試(批次)",
-              txtEvalTime:0,
-              txtEvalPercent:"",
-              txtEstiTime:0,
-              txtEstiPercent:"",
-              txtComments:""
-            },
-            {
-              txtItem:"測試(資料交換)",
-              txtEvalTime:0,
-              txtEvalPercent:"",
-              txtEstiTime:0,
-              txtEstiPercent:"",
-              txtComments:""
-            },
-            { 
-              txtItem:"整合測試",
-              txtEvalTime:0,
-              txtEvalPercent:"",
-              txtEstiTime:0,
-              txtEstiPercent:"",
-              txtComments:""
-            },
-            {
-              txtItem:"上線前確認",
-              txtEvalTime:0,
-              txtEvalPercent:"",
-              txtEstiTime:0,
-              txtEstiPercent:"",
-              txtComments:""
-            },
-            {
-              txtItem:"上線佈署/程式併版",
-              txtEvalTime:0,
-              txtEvalPercent:"",
-              txtEstiTime:0,
-              txtEstiPercent:"",
-              txtComments:""
-            } 
+          }
         ]
-
+        _self.modules_test=[
+          { 
+            txtItem:"測試(網頁)",
+            txtEvalTime:0,
+            txtEvalPercent:"",
+            txtEstiTime:0,
+            txtEstiPercent:"",
+            txtComments:""
+          },
+          {
+            txtItem:"測試(批次)",
+            txtEvalTime:0,
+            txtEvalPercent:"",
+            txtEstiTime:0,
+            txtEstiPercent:"",
+            txtComments:""
+          },
+          {
+            txtItem:"測試(資料交換)",
+            txtEvalTime:0,
+            txtEvalPercent:"",
+            txtEstiTime:0,
+            txtEstiPercent:"",
+            txtComments:""
+          },
+          { 
+            txtItem:"整合測試",
+            txtEvalTime:0,
+            txtEvalPercent:"",
+            txtEstiTime:0,
+            txtEstiPercent:"",
+            txtComments:""
+          },
+          {
+            txtItem:"上線前確認",
+            txtEvalTime:0,
+            txtEvalPercent:"",
+            txtEstiTime:0,
+            txtEstiPercent:"",
+            txtComments:""
+          },
+          {
+            txtItem:"上線佈署/程式併版",
+            txtEvalTime:0,
+            txtEvalPercent:"",
+            txtEstiTime:0,
+            txtEstiPercent:"",
+            txtComments:""
+          } 
+        ]
         _self.modules_dynamic_table=[
           {
-                txtItem:"每月客服/維運 工時",
-                txtEvalTime:0,
-                txtEvalPercent:"",
-                txtEstiTime:0,
-                txtEstiPercent:"",
-                txtComments:"預估上線後產生的每月維運工時，若為新模組請務必預估。"
+             txtItem:"每月客服/維運 工時",
+             txtEvalTime:0,
+             txtEvalPercent:"",
+             txtEstiTime:0,
+             txtEstiPercent:"",
+             txtComments:"預估上線後產生的每月維運工時，若為新模組請務必預估。"
           }    
         ]               
       }
@@ -199,7 +199,9 @@ var app = angular
       function calcPercent(){
         let sumEvalTime = _self.property.evalTime;//get evalTime
         let sumEstiTime = _self.property.estiTime;//get estiTime
-        calPercentForeach(_self.modules_normal,sumEvalTime,sumEstiTime);
+        calPercentForeach(_self.modules_detail,sumEvalTime,sumEstiTime);
+        calPercentForeach(_self.modules_develop,sumEvalTime,sumEstiTime);
+        calPercentForeach(_self.modules_test,sumEvalTime,sumEstiTime);
         calPercentForeach(_self.modules_dynamic_table,sumEvalTime,sumEstiTime);
       }
       function calPercentForeach(module,sumEval,sumEsti){
@@ -220,7 +222,7 @@ var app = angular
         _self.property[propertyName] = sum;
       }
       function timeCalcProc(){
-        let modules = [_self.modules_normal,_self.modules_dynamic_table];
+        let modules = [_self.modules_detail,_self.modules_develop,_self.modules_test,_self.modules_dynamic_table];
         //call sumEvalTime,sumEstiTime
         sumTime(modules,'evalTime','txtEvalTime');
         sumTime(modules,'estiTime','txtEstiTime');
