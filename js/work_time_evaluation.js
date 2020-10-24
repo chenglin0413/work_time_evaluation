@@ -15,10 +15,13 @@ var app = angular
       // public property
       // ==============================
       _self.property=[];//head_property
-      _self.modules_detail=[];
-      _self.modules_develop=[];
-      _self.modules_test=[];
-      _self.modules_dynamic_table=[];
+      _self.modules_detail=[];//detail column
+      _self.modules_develop=[];//develop column
+      _self.modules_test=[];//test column
+      _self.modules_dynamic_table=[];//dynamitc_tab column
+      _self.modules={};
+      _self.modules_arr=[];
+      _self.item_name=[];
       _self.newItem ={};// new_item
       
       // 初始化資料
@@ -154,27 +157,38 @@ var app = angular
              txtEstiPercent:"",
              txtComments:"預估上線後產生的每月維運工時，若為新模組請務必預估。"
           }    
-        ]               
+        ]
+        _self.modules=
+        { 
+            detail:_self.modules_detail,
+            develop:_self.modules_develop,
+            test:_self.modules_test,
+            dynamic_table:_self.modules_dynamic_table
+        }
+        _self.item_name=[
+          "工時明細","系統開發","系統測試","其他"
+        ]
+        _self.modules_arr=[
+          _self.modules.detail,_self.modules.develop,_self.modules.test,_self.modules.dynamic_table
+        ]
       }
 
-      function createItem(new_item){
-        let new_input_item = new_item;
-        let evalTime = new_item.txtEvalTime;
-        let estiTime = new_item.txtEstiTime;
-        if(new_input_item.txtItem!=null){// no txtItem , create not work
-          if(evalTime==null)new_input_item.txtEvalTime=0;
-          if(estiTime==null)new_input_item.txtEstiTime=0;          
-          _self.modules_dynamic_table.push(new_input_item);
-          _self.newItem = {};
-        }else{
-          alert("Please fill in item first!");
-        }
+      function createItem(new_item,moduel){
+        let new_input_item = new_item;//clone a input item
+        let evalTime = new_item.txtEvalTime;//get evalTime 
+        let estiTime = new_item.txtEstiTime;//get estiTime 
+        if(evalTime==null)new_input_item.txtEvalTime=0;
+        if(estiTime==null)new_input_item.txtEstiTime=0;     
+        new_input_item.removable=true;//add a removable property     
+        moduel.push(new_input_item);
+        _self.newItem = {};
       }
       function modifyItem(){
         alert("完成修改 ~!");
       }
-      function removeItem(index){
-        _self.modules_dynamic_table.splice(index,1);
+      function removeItem(module,index){
+        module.splice(index,1);
+        timeCalcProc();// re calculate Time amout and percentage
       }
       function clearInput(){
         _self.newItem={};
@@ -199,17 +213,16 @@ var app = angular
       function calcPercent(){
         let sumEvalTime = _self.property.evalTime;//get evalTime
         let sumEstiTime = _self.property.estiTime;//get estiTime
-        calPercentForeach(_self.modules_detail,sumEvalTime,sumEstiTime);
-        calPercentForeach(_self.modules_develop,sumEvalTime,sumEstiTime);
-        calPercentForeach(_self.modules_test,sumEvalTime,sumEstiTime);
-        calPercentForeach(_self.modules_dynamic_table,sumEvalTime,sumEstiTime);
+        calPercentForeach(_self.modules_arr,sumEvalTime,sumEstiTime);
       }
-      function calPercentForeach(module,sumEval,sumEsti){
-        module.forEach(function(item){
-          let  evalTime = item.txtEvalTime;
-          let  estiTime = item.txtEstiTime;
-          item.txtEvalPercent = Number.isNaN((evalTime/sumEval))? 0+'%' : Math.round((evalTime/sumEval)*100) +'%';
-          item.txtEstiPercent = Number.isNaN((estiTime/sumEsti))? 0+'%' : Math.round((estiTime/sumEsti)*100) +'%';
+      function calPercentForeach(modules,sumEval,sumEsti){
+        modules.forEach(function(module){
+          module.forEach(function(item){
+            let  evalTime = item.txtEvalTime;
+            let  estiTime = item.txtEstiTime;
+            item.txtEvalPercent = Number.isNaN((evalTime/sumEval))? 0+'%' : Math.round((evalTime/sumEval)*100) +'%';
+            item.txtEstiPercent = Number.isNaN((estiTime/sumEsti))? 0+'%' : Math.round((estiTime/sumEsti)*100) +'%';
+          })
         });
       }
       function sumTime(modules,propertyName,columnName){
@@ -222,7 +235,7 @@ var app = angular
         _self.property[propertyName] = sum;
       }
       function timeCalcProc(){
-        let modules = [_self.modules_detail,_self.modules_develop,_self.modules_test,_self.modules_dynamic_table];
+        let modules =_self.modules_arr;
         //call sumEvalTime,sumEstiTime
         sumTime(modules,'evalTime','txtEvalTime');
         sumTime(modules,'estiTime','txtEstiTime');
